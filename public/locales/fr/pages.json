@@ -1,0 +1,64 @@
+{
+  "dashboard": {
+    "overview": "Aperçu",
+    "books": "Livres",
+    "users": "Utilisateurs",
+    "loans": "Prêts",
+    "returns": "Retours",
+    "settings": "Paramètres",
+    "theme": "Thème"
+  },
+  "book_details": {
+    "details_title": "Détails du Livre",
+    "by_author": "par {{author}}",
+    "edit_book": "Modifier le Livre",
+    "confirm_delete": "Êtes-vous sûr de vouloir supprimer \"{{bookName}}\" ? Cette action est irréversible.",
+    "delete_failed": "La suppression du livre a échoué. Veuillez réessayer.",
+    "update_failed": "La mise à jour des détails du livre a échoué.",
+    "change_image": "Changer l'Image de Couverture",
+    "no_description": "Aucune description n'est disponible pour ce livre. Vous pouvez ajouter des détails en cliquant sur le bouton 'Modifier le Livre'.",
+
+    "title": "Titre",
+    "author": "Auteur",
+    "edition": "Édition",
+    "category": "Catégorie",
+    "initial_stock": "Stock Initial",
+    "current_stock": "Stock Actuel",
+    "shelf": "Étagère",
+    "room": "Salle",
+    "description": "Description",
+    "unknown_author": "Auteur Inconnu",
+
+    "alerts": {
+      "update_success": "Livre mis à jour avec succès !",
+      "update_error": "La mise à jour du livre a échoué. Veuillez réessayer.",
+      "delete_success": "Livre supprimé avec succès ! Redirection...",
+      "delete_error": "La suppression du livre a échoué. Veuillez réessayer.",
+      "upload_error": "L'envoi de l'image a échoué. Le livre sera mis à jour sans changer l'image.",
+      "comment_add_success": "Commentaire ajouté avec succès !",
+      "comment_add_error": "L'ajout du commentaire a échoué. Veuillez réessayer."
+    },
+    "comments": {
+      "title": "Commentaires et Avis",
+      "add_your_comment": "Ajoutez votre avis",
+      "comment_placeholder": "Écrivez votre commentaire ici...",
+      "submit_comment": "Soumettre le commentaire",
+      "anonymous": "Anonyme",
+      "no_comments": "Aucun commentaire pour le moment. Soyez le premier à laisser un avis !",
+      "show_more": "Voir tous les avis",
+      "show_less": "Voir moins d'avis"
+    },
+    "add_new": "Ajouter un Livre",
+    "add_new_in_department": "Ajouter un Livre dans {{department}}",
+    "section_info": "Informations sur le Livre",
+    "section_location": "Emplacement & Stock",
+    "section_image": "Image de Couverture",
+    "no_image_preview": "Aperçu de l'image",
+    "upload_image": "Télécharger une image",
+    "select_room": "Sélectionner une salle",
+    "number_of_copies": "Nombre d'Exemplaires",
+
+    "browsing": "Consultation de {{department}}",
+    "no_books_found": "Aucun livre trouvé dans ce département."
+  }
+}

@@ -1,0 +1,195 @@
+@import './styles/theme.css';
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
+@layer base {
+  html {
+    font-size: 14px; /* Make base font size smaller */
+    line-height: 1.4; /* Reduce line height for more compact text */
+    overflow-x: hidden;
+  }
+
+  body {
+    overflow-x: hidden; /* Prevent horizontal scroll */
+    max-width: 100vw; /* Ensure body doesn't exceed viewport width */
+  }
+
+  p {
+    font-weight: 400; /* Normal weight for body text */
+    letter-spacing: -0.01em; /* Slightly tighter letter spacing */
+  }
+}
+
+/* Add this to your main CSS file */
+.theme-applied {
+  /* This empty class is used to force a style refresh when theme changes */
+}
+
+/* Make sure these specific utilities for secondary colors are included */
+.bg-secondary {
+  background-color: var(--color-secondary);
+}
+.bg-secondary-50 {
+  background-color: var(--color-secondary-50);
+}
+.bg-secondary-100 {
+  background-color: var(--color-secondary-100);
+}
+.bg-secondary-200 {
+  background-color: var(--color-secondary-200);
+}
+.bg-secondary-300 {
+  background-color: var(--color-secondary-300);
+}
+.bg-secondary-400 {
+  background-color: var(--color-secondary-400);
+}
+.bg-secondary-500 {
+  background-color: var(--color-secondary-500);
+}
+.bg-secondary-600 {
+  background-color: var(--color-secondary-600);
+}
+.bg-secondary-700 {
+  background-color: var(--color-secondary-700);
+}
+.bg-secondary-800 {
+  background-color: var(--color-secondary-800);
+}
+.bg-secondary-900 {
+  background-color: var(--color-secondary-900);
+}
+
+.form-input {
+  @apply w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-primary focus:border-primary;
+}
+
+/* Smooth transitions for theme changes */
+* {
+  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+/* Custom scrollbar styling that respects theme */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+/* Loading spinner */
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
+
+/* Theme transition animation */
+.theme-transition {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pan {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.5s ease-out forwards;
+}
+
+.animate-slide-up {
+  animation: slideUp 0.5s ease-out forwards;
+  opacity: 0; /* Commence invisible pour l'animation */
+  animation-fill-mode: forwards; /* Garde l'état final de l'animation */
+}
+
+.animated-gradient {
+  background-size: 200% 200%;
+  animation: pan 15s ease infinite;
+}
+
+@keyframes floatSlow {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-15px) rotate(1deg);
+  }
+}
+
+@keyframes floatMedium {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-12px) rotate(-1deg);
+  }
+}
+
+@keyframes floatFast {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-10px) rotate(0.5deg);
+  }
+}
+
+@keyframes particleFloat {
+  0%, 100% {
+    transform: translateY(0px);
+    opacity: 0.3;
+  }
+  50% {
+    transform: translateY(-8px);
+    opacity: 0.8;
+  }
+}
+
+.float-animation {
+  animation: floatSlow 4s ease-in-out infinite;
+}
+
+.float-animation-delayed {
+  animation: floatMedium 5s ease-in-out infinite;
+  animation-delay: 1s;
+}
+
+.float-animation-slow {
+  animation: floatFast 6s ease-in-out infinite;
+  animation-delay: 2s;
+}
+
+.float-animation-reverse {
+  animation: floatSlow 4.5s ease-in-out infinite reverse;
+  animation-delay: 0.5s;
+}
+
+.particle-float {
+  animation: particleFloat 3s ease-in-out infinite;
+}
+
+.particle-float-delayed {
+  animation: particleFloat 4s ease-in-out infinite;
+  animation-delay: 1.5s;
+}
+
+.particle-float-slow {
+  animation: particleFloat 5s ease-in-out infinite;
+  animation-delay: 2.5s;
+}

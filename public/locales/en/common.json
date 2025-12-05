@@ -1,0 +1,25 @@
+{
+  "app_name": "BIBLIO ENSPY",
+  "app_subtitle": "Book Management System",
+  "login": "Login",
+  "current_date": "{{date}}",
+  "language": "Language",
+  "switch_to_french": "Passer au Français",
+  "search_placeholder": "Search...",
+  "messages": "Messages",
+  "profile": "Profile",
+  "light_mode": "Light mode",
+  "dark_mode": "Dark mode",
+  "logout": "Logout",
+  "pagination": {
+    "previous": "Previous",
+    "next": "Next",
+    "go_to_page": "Go to page",
+    "page": "Page",
+    "of": "of"
+  },
+  "delete": "Delete",
+  "edit_book": "Edit Book",
+  "save": "Save",
+  "cancel": "Cancel"
+}

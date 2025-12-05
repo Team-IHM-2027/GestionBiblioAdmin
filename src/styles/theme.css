@@ -1,0 +1,119 @@
+/**
+ * Global theme styles for GestionBiblioAdmin
+ * Using the 10-30-60 color rule:
+ * - 10% Primary color (chocolate - #D2691E) for important elements
+ * - 30% Secondary color (beige - #E7DAC1) for backgrounds and containers
+ * - 60% White background (fixed, not part of theming)
+ */
+
+:root {
+    /* Primary color - chocolate #D2691E (10% of UI) */
+    --color-primary: #D2691E;
+    --color-primary-50: #FCF5F1;
+    --color-primary-100: #F9ECE3;
+    --color-primary-200: #F3D9C8;
+    --color-primary-300: #EBC5AC;
+    --color-primary-400: #E3A883;
+    --color-primary-500: #D2691E;
+    --color-primary-600: #BC5D1B;
+    --color-primary-700: #A65218;
+    --color-primary-800: #8F4615;
+    --color-primary-900: #773B11;
+
+    /* Secondary color - beige #E7DAC1 (30% of UI) */
+    --color-secondary: #E7DAC1;
+    --color-secondary-50: #FDFCFA;
+    --color-secondary-100: #FAF8F5;
+    --color-secondary-200: #F6F2EA;
+    --color-secondary-300: #F1EBE0;
+    --color-secondary-400: #ECE3D0;
+    --color-secondary-500: #E7DAC1;
+    --color-secondary-600: #D0C4AD;
+    --color-secondary-700: #B8AE99;
+    --color-secondary-800: #A19884;
+    --color-secondary-900: #8A826F;
+}
+
+/* Primary color utility classes (10% of UI) */
+.bg-primary { background-color: var(--color-primary); }
+.bg-primary-50 { background-color: var(--color-primary-50); }
+.bg-primary-100 { background-color: var(--color-primary-100); }
+.bg-primary-200 { background-color: var(--color-primary-200); }
+.bg-primary-300 { background-color: var(--color-primary-300); }
+.bg-primary-400 { background-color: var(--color-primary-400); }
+.bg-primary-500 { background-color: var(--color-primary-500); }
+.bg-primary-600 { background-color: var(--color-primary-600); }
+.bg-primary-700 { background-color: var(--color-primary-700); }
+.bg-primary-800 { background-color: var(--color-primary-800); }
+.bg-primary-900 { background-color: var(--color-primary-900); }
+
+.text-primary { color: var(--color-primary); }
+.text-primary-50 { color: var(--color-primary-50); }
+.text-primary-100 { color: var(--color-primary-100); }
+.text-primary-200 { color: var(--color-primary-200); }
+.text-primary-300 { color: var(--color-primary-300); }
+.text-primary-400 { color: var(--color-primary-400); }
+.text-primary-500 { color: var(--color-primary-500); }
+.text-primary-600 { color: var(--color-primary-600); }
+.text-primary-700 { color: var(--color-primary-700); }
+.text-primary-800 { color: var(--color-primary-800); }
+.text-primary-900 { color: var(--color-primary-900); }
+
+.border-primary { border-color: var(--color-primary); }
+.border-primary-50 { border-color: var(--color-primary-50); }
+.border-primary-100 { border-color: var(--color-primary-100); }
+.border-primary-200 { border-color: var(--color-primary-200); }
+.border-primary-300 { border-color: var(--color-primary-300); }
+.border-primary-400 { border-color: var(--color-primary-400); }
+.border-primary-500 { border-color: var(--color-primary-500); }
+.border-primary-600 { border-color: var(--color-primary-600); }
+.border-primary-700 { border-color: var(--color-primary-700); }
+.border-primary-800 { border-color: var(--color-primary-800); }
+.border-primary-900 { border-color: var(--color-primary-900); }
+
+/* Secondary color utility classes (30% of UI) */
+.bg-secondary { background-color: var(--color-secondary); }
+.bg-secondary-50 { background-color: var(--color-secondary-50); }
+.bg-secondary-100 { background-color: var(--color-secondary-100); }
+.bg-secondary-200 { background-color: var(--color-secondary-200); }
+.bg-secondary-300 { background-color: var(--color-secondary-300); }
+.bg-secondary-400 { background-color: var(--color-secondary-400); }
+.bg-secondary-500 { background-color: var(--color-secondary-500); }
+.bg-secondary-600 { background-color: var(--color-secondary-600); }
+.bg-secondary-700 { background-color: var(--color-secondary-700); }
+.bg-secondary-800 { background-color: var(--color-secondary-800); }
+.bg-secondary-900 { background-color: var(--color-secondary-900); }
+
+.text-secondary { color: var(--color-secondary); }
+.text-secondary-50 { color: var(--color-secondary-50); }
+.text-secondary-100 { color: var(--color-secondary-100); }
+.text-secondary-200 { color: var(--color-secondary-200); }
+.text-secondary-300 { color: var(--color-secondary-300); }
+.text-secondary-400 { color: var(--color-secondary-400); }
+.text-secondary-500 { color: var(--color-secondary-500); }
+.text-secondary-600 { color: var(--color-secondary-600); }
+.text-secondary-700 { color: var(--color-secondary-700); }
+.text-secondary-800 { color: var(--color-secondary-800); }
+.text-secondary-900 { color: var(--color-secondary-900); }
+
+.border-secondary { border-color: var(--color-secondary); }
+.border-secondary-50 { border-color: var(--color-secondary-50); }
+.border-secondary-100 { border-color: var(--color-secondary-100); }
+.border-secondary-200 { border-color: var(--color-secondary-200); }
+.border-secondary-300 { border-color: var(--color-secondary-300); }
+.border-secondary-400 { border-color: var(--color-secondary-400); }
+.border-secondary-500 { border-color: var(--color-secondary-500); }
+.border-secondary-600 { border-color: var(--color-secondary-600); }
+.border-secondary-700 { border-color: var(--color-secondary-700); }
+.border-secondary-800 { border-color: var(--color-secondary-800); }
+.border-secondary-900 { border-color: var(--color-secondary-900); }
+
+/* Theme update animation */
+.theme-updated {
+    animation: theme-flash 0.5s ease;
+}
+
+@keyframes theme-flash {
+    0% { opacity: 0.8; }
+    100% { opacity: 1; }
+}

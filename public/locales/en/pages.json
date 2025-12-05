@@ -1,0 +1,63 @@
+{
+  "dashboard": {
+    "overview": "Overview",
+    "books": "Books",
+    "users": "Users",
+    "loans": "Loans",
+    "returns": "Returns",
+    "settings": "Settings",
+    "theme": "Theme"
+  },
+  "book_details": {
+    "details_title": "Book Details",
+    "by_author": "by {{author}}",
+    "edit_book": "Edit Book",
+    "confirm_delete": "Are you sure you want to delete \"{{bookName}}\"? This action cannot be undone.",
+    "delete_failed": "Failed to delete the book. Please try again.",
+    "update_failed": "Failed to update book details.",
+    "change_image": "Change Cover Image",
+    "no_description": "No description is available for this book. You can add details by clicking the 'Edit Book' button.",
+    "title": "Title",
+    "author": "Author",
+    "edition": "Edition",
+    "category": "Category",
+    "initial_stock": "Initial Stock",
+    "current_stock": "Current Stock",
+    "shelf": "Shelf",
+    "room": "Room",
+    "description": "Description",
+    "unknown_author": "Unknown Author",
+    "alerts": {
+      "update_success": "Book updated successfully!",
+      "update_error": "Failed to update the book. Please try again.",
+      "delete_success": "Book deleted successfully! Navigating back...",
+      "delete_error": "Failed to delete the book. Please try again.",
+      "upload_error": "Failed to upload image. The book will be updated without changing the image.",
+      "comment_add_success": "Comment added successfully!",
+      "comment_add_error": "Failed to add comment. Please try again."
+    },
+    "comments": {
+      "title": "Comments & Reviews",
+      "add_your_comment": "Add Your Review",
+      "comment_placeholder": "Write your comment here...",
+      "submit_comment": "Submit Comment",
+      "anonymous": "Anonymous",
+      "no_comments": "No comments yet. Be the first to leave a review!",
+      "show_more": "Show All Reviews",
+      "show_less": "Show Fewer Reviews"
+    },
+    "add_new": "Add New Book",
+    "add_new_in_department": "Add New Book in {{department}}",
+    "section_info": "Book Information",
+    "section_location": "Location & Stock",
+    "section_image": "Cover Image",
+    "no_image_preview": "Image preview",
+    "upload_image": "Upload an image",
+    "select_room": "Select a room",
+    "number_of_copies": "Number of Copies",
+
+    "browsing": "{{department}} Viewing",
+    "no_books_found": "No Books found in this Department."
+
+  }
+}
