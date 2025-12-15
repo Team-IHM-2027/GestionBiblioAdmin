@@ -1,0 +1,60 @@
+import React, { useEffect, useState } from 'react';
+import { collection, query, orderBy, onSnapshot } from 'firebase/firestore';
+import { db } from '../config/firebase';
+
+type Reservation = {
+  id: string;
+  livreId: string;
+  userId: string;
+  status?: string;
+  reservedAt?: Date;
+};
+
+export default function Reservations() {
+  const [reservations, setReservations] = useState<Reservation[]>([]);
+  const [message, setMessage] = useState<string | null>(null);
+
+  useEffect(() => {
+    const q = query(collection(db, 'Reservations'), orderBy('reservedAt', 'desc'));
+    const unsubscribe = onSnapshot(
+      q,
+      snap => {
+        const items = snap.docs.map(d => {
+          const data = d.data() as any;
+          const toDate = (t: any) =>
+            t && typeof t.toDate === 'function' ? t.toDate() : t ? new Date(t) : undefined;
+          return {
+            id: d.id,
+            livreId: data.livreId || '',
+            userId: data.userId || '',
+            status: data.status || '',
+            reservedAt: toDate(data.reservedAt),
+          } as Reservation;
+        });
+        setReservations(items);
+      },
+      err => {
+        console.error('Erreur écoute reservations', err);
+        setMessage('Erreur lors de la synchronisation des réservations.');
+        setTimeout(() => setMessage(null), 3000);
+      }
+    );
+
+    return () => unsubscribe();
+  }, []);
+
+  return (
+    <div>
+      <h1>Réservations (temps réel)</h1>
+      {message && <div role="status" style={{ marginTop: 12 }}>{message}</div>}
+      <ul>
+        {reservations.map(r => (
+          <li key={r.id}>
+            <strong>Livre:</strong> {r.livreId} — <strong>Usager:</strong> {r.userId} — <strong>Statut:</strong> {r.status}
+            {r.reservedAt && <> — <small>{r.reservedAt.toLocaleString()}</small></>}
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}

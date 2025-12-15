@@ -1,76 +1,88 @@
-// src/services/authService.tsx
-import { db } from '../config/firebase';
-import { doc, setDoc, getDocs, collection, query, where } from 'firebase/firestore';
-import bcrypt from 'bcryptjs';
+// src/services/authService.ts
+import { auth, db } from '../config/firebase';
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  sendEmailVerification,
+  signOut
+} from 'firebase/auth';
+import { doc, setDoc, getDoc } from 'firebase/firestore';
 
 export interface AdminData {
-	uid: string;
-	email: string;
-	password?: string;
-	name: string;
-	role: string;
-	gender: string;
-	createdAt: Date;
-	isVerified: boolean; // Nous gardons ce champ pour une utilisation future
-	etat: 'ras' | 'bloc';
+  uid: string;
+  email: string;
+  name: string;
+  role: string;
+  gender: string;
+  isVerified: boolean;
+  etat: 'ras' | 'bloc';
 }
 
 /**
- * Crée un nouvel admin dans la collection BiblioAdmin.
- * Le compte est vérifié par défaut.
+ * INSCRIPTION + EMAIL DE VÉRIFICATION
  */
-export const registerAdmin = async (name: string, email: string, password: string, gender: string): Promise<void> => {
-	const q = query(collection(db, 'BiblioAdmin'), where('email', '==', email));
-	const querySnapshot = await getDocs(q);
-	if (!querySnapshot.empty) {
-		throw new Error('Cette adresse e-mail est déjà utilisée.');
-	}
+export const registerAdmin = async (
+  name: string,
+  email: string,
+  password: string,
+  gender: string
+): Promise<void> => {
 
-	const hashedPassword = await bcrypt.hash(password, 10);
-	const adminDocRef = doc(db, 'BiblioAdmin', email);
+  // 1. Créer le compte Firebase Auth
+  const cred = await createUserWithEmailAndPassword(auth, email, password);
 
-	await setDoc(adminDocRef, {
-		name,
-		email,
-		gender,
-		password: hashedPassword,
-		role: 'bibliothecaire',
-		imageUrl: "", // L'image peut être ajoutée plus tard
-		createdAt: new Date(),
-		isVerified: true, // L'utilisateur est vérifié par défaut
-	});
+  // 2. Envoyer le mail de vérification (GMAIL RÉEL)
+  await sendEmailVerification(cred.user);
+
+  // 3. Créer le profil Firestore
+  await setDoc(doc(db, 'BiblioAdmin', cred.user.uid), {
+    name,
+    email,
+    gender,
+    role: 'bibliothecaire',
+    createdAt: new Date(),
+    isVerified: false,
+    etat: 'ras'
+  });
 };
 
 /**
- * Connecte un admin en vérifiant l'email et le mot de passe.
+ * CONNEXION (INTERDITE SI EMAIL NON VÉRIFIÉ)
  */
-export const loginAdmin = async (email: string, password: string): Promise<AdminData> => {
-	const q = query(collection(db, 'BiblioAdmin'), where('email', '==', email));
-	const querySnapshot = await getDocs(q);
+export const loginAdmin = async (
+  email: string,
+  password: string
+): Promise<AdminData> => {
 
-	if (querySnapshot.empty) {
-		throw new Error("L'email ou le mot de passe est incorrect.");
-	}
+  const cred = await signInWithEmailAndPassword(auth, email, password);
 
-	const adminDocSnap = querySnapshot.docs[0];
-	const adminData = adminDocSnap.data();
+  if (!cred.user.emailVerified) {
+    await signOut(auth);
+    throw new Error("Veuillez vérifier votre email avant de vous connecter.");
+  }
 
-	if (!adminData.isVerified) {
-		// Cette vérification reste au cas où vous changeriez manuellement le statut dans la DB
-		throw new Error("Ce compte n'est pas activé. Veuillez contacter le support.");
-	}
+  const snap = await getDoc(doc(db, 'BiblioAdmin', cred.user.uid));
+  if (!snap.exists()) {
+    throw new Error("Profil utilisateur introuvable.");
+  }
 
-	const isMatch = await bcrypt.compare(password, adminData.password);
-	if (!isMatch) {
-		throw new Error("L'email ou le mot de passe est incorrect.");
-	}
+  const data = snap.data();
 
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	const { password: _, adminInfo } = adminData;
-	return { uid: adminDocSnap.id, ...adminInfo } as AdminData;
+  if (data.etat === 'bloc') {
+    throw new Error("Votre compte est bloqué.");
+  }
+
+  return {
+    uid: cred.user.uid,
+    email: cred.user.email!,
+    name: data.name,
+    role: data.role,
+    gender: data.gender,
+    isVerified: true,
+    etat: data.etat
+  };
 };
 
-/**
- * Envoie un e-mail de réinitialisation de mot de passe.
- * Note: Cette fonction est un placeholder. Vous devez implémenter l'envoi d'e-mail via votre service d'e-mail.
- */
+export const logout = async () => {
+  await signOut(auth);
+};
