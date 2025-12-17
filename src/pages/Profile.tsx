@@ -30,7 +30,7 @@ const Profile: React.FC = () => {
   const navigate = useNavigate();
 
   const { admin, loading: authLoading } = useAuth();
-  const userId = admin?.uid;
+  const userId = admin?.uid ?? '';
 
   const [isEditing, setIsEditing] = useState(false);
   const [notification, setNotification] = useState<NotificationState>({
@@ -62,10 +62,10 @@ const Profile: React.FC = () => {
     accountAge: 0
   };
 
-  const profileHook = useProfile(userId || '');
+  const profileHook = useProfile(userId);
 
-  const profile = profileHook.profile || emptyProfile;
-  const stats = profileHook.stats || emptyStats;
+  const profile = profileHook.profile ?? emptyProfile;
+  const stats = profileHook.stats ?? emptyStats;
 
   const loading = authLoading || (userId ? profileHook.loading : false);
 
@@ -141,7 +141,9 @@ const Profile: React.FC = () => {
             <h1 className="text-4xl font-bold">
               {profile.name || t('profile.status.unnamed_user')}
             </h1>
-            <p className="opacity-90 text-lg">{profile.email || 'email@exemple.com'}</p>
+            <p className="opacity-90 text-lg">
+              {profile.email || 'email@exemple.com'}
+            </p>
 
             {profile.department && <p>{profile.department}</p>}
             {profile.bio && <p className="mt-2 italic">{profile.bio}</p>}
