@@ -5,6 +5,7 @@ import { BiLogOut } from "react-icons/bi";
 import { FiChevronDown, FiChevronRight } from "react-icons/fi";
 import useI18n from '../../hooks/useI18n';
 import { useAuth } from '../../context/AuthContext.tsx';
+import { useSystemAlerts } from '../../hooks/useSystemAlerts';
 
 const Sidebar: React.FC = () => {
 	const { config } = useConfig();
@@ -13,6 +14,18 @@ const Sidebar: React.FC = () => {
 	const location = useLocation();
 	const [isBookManagementOpen, setIsBookManagementOpen] = useState(false);
 	const { logout } = useAuth();
+	const { alerts } = useSystemAlerts();
+	const latestAlertId = alerts[0]?.id;
+	const getLastAcknowledgedAlertId = () => {
+		if (typeof window === 'undefined') return null;
+		try {
+			return window.localStorage.getItem('lastAcknowledgedAlertId');
+		} catch (error) {
+			console.error('Unable to read localStorage for alerts:', error);
+			return null;
+		}
+	};
+	const hasPendingAlert = Boolean(latestAlertId && latestAlertId !== getLastAcknowledgedAlertId());
 
 	const sidebarItems = [
 		{ id: 'overview', label: t('components:sidebar.overview'), icon: 'chart-pie' },
@@ -208,7 +221,12 @@ const Sidebar: React.FC = () => {
 								<NavLink to={`/dashboard/${item.id}`} className={({ isActive }) => `flex items-center w-full px-4 py-2 rounded-md transition-colors ${isActive ? 'bg-primary text-white' : 'hover:bg-secondary-300 text-primary-800'
 									}`}>
 									<span className="mr-3">{renderIcon(item.icon)}</span>
-									<span>{item.label}</span>
+									<span className="relative">
+										{item.label}
+										{item.id === 'settings' && hasPendingAlert && (
+											<span className="absolute -top-1 -right-3 w-2 h-2 bg-red-500 rounded-full" />
+										)}
+									</span>
 								</NavLink>
 							</li>
 						))}

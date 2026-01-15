@@ -89,7 +89,7 @@ const Navbar: React.FC = () => {
 	// const shouldShowSearch = () => location.pathname.includes('/books') || location.pathname.includes('/users');
 	const shouldShowBackButton = () => location.pathname !== '/dashboard';
 	const goBack = () => navigate(-1);
-	const goToProfile = () => navigate('/dashboard/profile'); // ✅ Correction: ajouter /dashboard
+	const goToProfile = () => navigate('/dashboard/profile'); // ?. Correction: ajouter /dashboard
 
 	return (
 		<header className="bg-white shadow-sm sticky top-0 z-10">
@@ -230,7 +230,6 @@ const Navbar: React.FC = () => {
 							</span>
 						)}
 					</button>
-
 					{/* ✅ Correction: onClick sur le bouton parent */}
 					<button
 						onClick={goToProfile}
