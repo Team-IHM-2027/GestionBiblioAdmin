@@ -26,3 +26,4 @@ export const functions = getFunctions(app);
 
 // Export default organization name from environment variables
 export const DEFAULT_ORGANIZATION = import.meta.env.VITE_DEFAULT_ORGANIZATION || 'CampusLibrary';
+

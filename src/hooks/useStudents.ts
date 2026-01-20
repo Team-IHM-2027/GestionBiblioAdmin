@@ -194,15 +194,15 @@ export const useStudents = (): UseStudentsReturn => {
   }, [selectedStudents]);
 
   // Student actions
-  const updateStudentStatus = useCallback(async (studentId: string, newStatus: 'ras' | 'bloc', reason?: string) => {
-    try {
-      await studentsService.updateStudentStatus(studentId, newStatus, reason);
-      await loadStats(); // Refresh stats
-    } catch (error) {
-      console.error('Erreur lors de la mise à jour du statut:', error);
-      throw error;
-    }
-  }, [loadStats]);
+  const updateStudentStatus = useCallback(async (studentId: string, newStatus: 'ras' | 'bloc', librarianMessage?: string) => {
+  try {
+    await studentsService.updateStudentStatus(studentId, newStatus, librarianMessage);
+    // refresh / success handling happens via subscription
+  } catch (error) {
+    console.error('Erreur lors de la mise à jour du statut:', error);
+    throw error;
+  }
+}, []);
 
   const bulkUpdateStatus = useCallback(async (studentIds: string[], newStatus: 'ras' | 'bloc') => {
     try {

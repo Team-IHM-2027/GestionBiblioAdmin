@@ -43,17 +43,12 @@ const Users: React.FC = () => {
   const handleStatusUpdate = async (studentId: string, newStatus: 'ras' | 'bloc') => {
     try {
       let librarianMessage = '';
-      
+
       if (newStatus === 'bloc') {
-        // Ask librarian for reason when blocking
-        librarianMessage = prompt(
-          'Entrez la raison du blocage du compte:',
-          'Violation des règles de la bibliothèque'
-        ) || 'Raison non spécifiée';
-        
-        if (!librarianMessage) return; // User cancelled
+        librarianMessage = prompt('Entrez la raison du blocage du compte:', 'Violation des règles') || '';
+        if (librarianMessage === null) return; // user cancelled
       }
-      
+
       await updateStudentStatus(studentId, newStatus, librarianMessage);
     } catch (error) {
       console.error('Erreur lors de la mise à jour du statut:', error);
