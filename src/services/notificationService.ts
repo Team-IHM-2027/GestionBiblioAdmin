@@ -15,6 +15,7 @@ import {
     getDoc
 } from 'firebase/firestore';
 import { db } from '../config/firebase';
+import emailjs from '@emailjs/browser';
 
 // Types pour les notifications
 export interface BaseNotification {
@@ -138,6 +139,40 @@ class NotificationService {
         }
     }
 
+
+
+    /**
+     * Envoie un email via EmailJS
+     */
+    async sendEmailNotification(
+        toEmail: string,
+        toName: string,
+        templateParams: Record<string, any>
+    ): Promise<void> {
+        try {
+            // Ces valeurs doivent être fournies par l'utilisateur ou stockées dans des variables d'env
+            // Pour l'instant on utilise des placeholders que l'utilisateur devra remplacer
+            const SERVICE_ID = 'service_ojdlhqh';
+            const TEMPLATE_ID = 'template_m8k96ae';
+            const PUBLIC_KEY = 'cFpAuuBpgFKTfWm16';
+
+            await emailjs.send(
+                SERVICE_ID,
+                TEMPLATE_ID,
+                {
+                    to_email: toEmail,
+                    to_name: toName,
+                    ...templateParams
+                },
+                PUBLIC_KEY
+            );
+            console.log(`📧 Email envoyé via EmailJS à ${toEmail}`);
+        } catch (error) {
+            console.error("❌ Erreur lors de l'envoi EmailJS:", error);
+            throw error;
+        }
+    }
+
     /**
      * Crée une notification de réservation pour un bibliothécaire
      */
@@ -159,7 +194,7 @@ class NotificationService {
                 userEmail: userEmail,
                 type: requestType === 'loan' ? 'loan_request' : 'reservation',
                 title: requestType === 'loan' ? '📖 Nouvelle demande d\'emprunt' : '📚 Nouvelle demande de réservation',
-                message: requestType === 'loan' 
+                message: requestType === 'loan'
                     ? `${userName} souhaite emprunter "${bookTitle}"`
                     : `${userName} souhaite réserver "${bookTitle}"`,
                 read: false,
@@ -459,7 +494,7 @@ class NotificationService {
             const notifications = snapshot.docs.map(doc => {
                 const data = doc.data();
                 const type = data.type;
-                
+
                 // Determine request type
                 let requestType: 'reservation' | 'loan' = 'reservation';
                 if (type === 'loan_request') {
@@ -467,7 +502,7 @@ class NotificationService {
                 } else if (data.data?.requestType) {
                     requestType = data.data.requestType;
                 }
-                
+
                 const baseNotification = {
                     id: doc.id,
                     userId: data.userId || 'librarians',
@@ -527,55 +562,55 @@ class NotificationService {
         const unsubscribe = onSnapshot(
             q,
             (snapshot) => {
-            const notifications = snapshot.docs.map(doc => {
-                const data = doc.data();
-                const requestType = data.data?.requestType || (data.type === 'loan_request' ? 'loan' : 'reservation');
-                
-                return {
-                id: doc.id,
-                userId: data.userId || 'librarians',
-                userName: data.userName || data.data?.userName || '',
-                userEmail: data.userEmail || data.data?.userEmail || '',
-                type: 'reservation',
-                title: data.title || (requestType === 'loan' ? '📖 Demande d\'emprunt' : '📚 Demande de réservation'),
-                message: data.message || '',
-                read: data.read || false,
-                timestamp: data.timestamp,
-                processed: data.processed || false,
-                decision: data.decision,
-                processedBy: data.processedBy,
-                processedAt: data.processedAt,
-                reason: data.reason,
-                data: {
-                    bookId: data.data?.bookId || data.bookId || '',
-                    bookTitle: data.data?.bookTitle || data.bookTitle || '',
-                    userId: data.data?.userId || data.userId || '',
-                    userEmail: data.data?.userEmail || data.userEmail || '',
-                    userName: data.data?.userName || data.userName || '',
-                    requestDate: data.timestamp ? (typeof data.timestamp.toDate === 'function' ? data.timestamp.toDate().toISOString() : new Date(data.timestamp).toISOString()) : new Date().toISOString(),
-                    requestType: requestType,
-                    slotNumber: data.data?.slotNumber || data.slotNumber,
-                    priority: data.data?.priority || 'normal'
-                } as ReservationNotificationData
-                } as ReservationNotification;
-            });
-            callback(notifications);
+                const notifications = snapshot.docs.map(doc => {
+                    const data = doc.data();
+                    const requestType = data.data?.requestType || (data.type === 'loan_request' ? 'loan' : 'reservation');
+
+                    return {
+                        id: doc.id,
+                        userId: data.userId || 'librarians',
+                        userName: data.userName || data.data?.userName || '',
+                        userEmail: data.userEmail || data.data?.userEmail || '',
+                        type: 'reservation',
+                        title: data.title || (requestType === 'loan' ? '📖 Demande d\'emprunt' : '📚 Demande de réservation'),
+                        message: data.message || '',
+                        read: data.read || false,
+                        timestamp: data.timestamp,
+                        processed: data.processed || false,
+                        decision: data.decision,
+                        processedBy: data.processedBy,
+                        processedAt: data.processedAt,
+                        reason: data.reason,
+                        data: {
+                            bookId: data.data?.bookId || data.bookId || '',
+                            bookTitle: data.data?.bookTitle || data.bookTitle || '',
+                            userId: data.data?.userId || data.userId || '',
+                            userEmail: data.data?.userEmail || data.userEmail || '',
+                            userName: data.data?.userName || data.userName || '',
+                            requestDate: data.timestamp ? (typeof data.timestamp.toDate === 'function' ? data.timestamp.toDate().toISOString() : new Date(data.timestamp).toISOString()) : new Date().toISOString(),
+                            requestType: requestType,
+                            slotNumber: data.data?.slotNumber || data.slotNumber,
+                            priority: data.data?.priority || 'normal'
+                        } as ReservationNotificationData
+                    } as ReservationNotification;
+                });
+                callback(notifications);
             },
             (error) => {
-            console.error('Error in reservation requests subscription:', error);
-            callback([]);
+                console.error('Error in reservation requests subscription:', error);
+                callback([]);
             }
         );
 
         // Explicitly return the unsubscribe function
         return unsubscribe;
-        }
+    }
     /**
      * Écoute seulement les demandes d'emprunt
      */
     subscribeToLoanRequests(callback: (notifications: LoanRequestNotification[]) => void) {
         this.subscribeToLibrarianRequests((allNotifications) => {
-            const loans = allNotifications.filter(n => 
+            const loans = allNotifications.filter(n =>
                 n.type === 'loan_request' || n.data.requestType === 'loan'
             ) as LoanRequestNotification[];
             callback(loans);
@@ -653,22 +688,22 @@ class NotificationService {
                 where('processed', '==', false)
             );
             const querySnapshot = await getDocs(q);
-            
+
             let reservations = 0;
             let loans = 0;
-            
+
             querySnapshot.forEach(doc => {
                 const data = doc.data();
                 const type = data.type;
                 const requestType = data.data?.requestType || (type === 'loan_request' ? 'loan' : 'reservation');
-                
+
                 if (requestType === 'loan') {
                     loans++;
                 } else {
                     reservations++;
                 }
             });
-            
+
             return { reservations, loans };
         } catch (error) {
             console.error("❌ Erreur lors du comptage des demandes en attente:", error);
@@ -687,18 +722,18 @@ class NotificationService {
                 where('processed', '==', false)
             );
             const querySnapshot = await getDocs(q);
-            
+
             let count = 0;
             querySnapshot.forEach(doc => {
                 const data = doc.data();
                 const type = data.type;
                 const requestType = data.data?.requestType || (type === 'loan_request' ? 'loan' : 'reservation');
-                
+
                 if (requestType === 'reservation') {
                     count++;
                 }
             });
-            
+
             return count;
         } catch (error) {
             console.error("❌ Erreur lors du comptage des réservations en attente:", error);
@@ -717,18 +752,18 @@ class NotificationService {
                 where('processed', '==', false)
             );
             const querySnapshot = await getDocs(q);
-            
+
             let count = 0;
             querySnapshot.forEach(doc => {
                 const data = doc.data();
                 const type = data.type;
                 const requestType = data.data?.requestType || (type === 'loan_request' ? 'loan' : 'reservation');
-                
+
                 if (requestType === 'loan') {
                     count++;
                 }
             });
-            
+
             return count;
         } catch (error) {
             console.error("❌ Erreur lors du comptage des emprunts en attente:", error);
@@ -786,7 +821,7 @@ class NotificationService {
                 const data = doc.data();
                 const type = data.type;
                 const requestType = data.data?.requestType || (type === 'loan_request' ? 'loan' : 'reservation');
-                
+
                 const notificationData: ReservationNotificationData = {
                     bookId: data.data?.bookId || data.bookId || data.livreId || '',
                     bookTitle: data.data?.bookTitle || data.bookTitle || data.nomLivre || 'Livre',
@@ -849,7 +884,7 @@ class NotificationService {
     async getPendingReservations(): Promise<ReservationNotification[]> {
         try {
             const requests = await this.getPendingRequests();
-            return requests.filter(req => 
+            return requests.filter(req =>
                 req.type === 'reservation' && req.data.requestType === 'reservation'
             ) as ReservationNotification[];
         } catch (error) {
@@ -864,7 +899,7 @@ class NotificationService {
     async getPendingLoans(): Promise<LoanRequestNotification[]> {
         try {
             const requests = await this.getPendingRequests();
-            return requests.filter(req => 
+            return requests.filter(req =>
                 req.type === 'loan_request' || req.data.requestType === 'loan'
             ) as LoanRequestNotification[];
         } catch (error) {
@@ -889,7 +924,7 @@ class NotificationService {
                 const data = doc.data();
                 const type = data.type;
                 const requestType = data.data?.requestType || (type === 'loan_request' ? 'loan' : 'reservation');
-                
+
                 const notificationData: ReservationNotificationData = {
                     bookId: data.data?.bookId || data.bookId || data.livreId || '',
                     bookTitle: data.data?.bookTitle || data.bookTitle || data.nomLivre || 'Livre',
@@ -1091,27 +1126,27 @@ class NotificationService {
     subscribeToIncomingReservations(callback?: () => void) {
         try {
             const usersCollection = collection(db, 'BiblioUser');
-            
+
             // Subscribe to all users
             const unsubscribe = onSnapshot(usersCollection, async (snapshot) => {
                 // Check each user for new reservations
                 for (const userDoc of snapshot.docs) {
                     const userData = userDoc.data();
-                    
+
                     // Check etat1, etat2, etat3 for 'reserv' status
                     for (let i = 1; i <= 3; i++) {
                         const etatKey = `etat${i}`;
                         const tabKey = `tabEtat${i}`;
-                        
+
                         if (userData[etatKey] === 'reserv' && userData[tabKey]?.[0]) {
                             const tabData = userData[tabKey];
                             const bookId = tabData[0];
                             const bookName = tabData[1] || 'Livre';
                             //const _reservationDate = tabData[5];
-                            
+
                             // Check if notification already exists for this reservation
                             const existingNotif = await this.findLibrarianNotification(userDoc.id, bookId);
-                            
+
                             if (!existingNotif) {
                                 // Create a new notification for this reservation
                                 await this.createReservationNotification(
@@ -1122,20 +1157,20 @@ class NotificationService {
                                     bookName,
                                     i, // slotNumber
                                     'reservation'
-                            );
-                            console.log(`📚 Notification créée pour nouvelle réservation: ${userDoc.id} - ${bookName}`);
+                                );
+                                console.log(`📚 Notification créée pour nouvelle réservation: ${userDoc.id} - ${bookName}`);
                             }
                         }
                     }
                 }
-                
+
                 if (callback) callback();
             });
-            
+
             return unsubscribe;
         } catch (error) {
             console.error("Erreur lors de l'écoute des réservations entrantes:", error);
-            return () => {};
+            return () => { };
         }
     }
 }

@@ -196,13 +196,44 @@ export class StudentsService {
       // @ts-ignore
       const _prevEtat = studentData.etat;
 
-      // Update status and store reason + timestamp for the Cloud Function to use
+      // Update status and store reason
       await updateDoc(studentRef, {
         etat: newStatus,
         updated_at: new Date(),
         blockedAt: newStatus === 'bloc' ? new Date() : null,
         blockedReason: newStatus === 'bloc' ? (librarianMessage || '') : null
       });
+
+      // Send Email Notification via EmailJS
+      try {
+        const studentEmail = studentData.email || studentData.id;
+        const studentName = studentData.name || studentData.nom || 'Étudiant';
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+        if (emailRegex.test(studentEmail)) {
+          if (newStatus === 'bloc') {
+            // Paramètres pour le template EmailJS
+            const templateParams = {
+              to_name: studentName,
+              message: `Nous vous informons que votre compte d'accès à la bibliothèque a été bloqué pour la raison suivante : ${librarianMessage || 'Non spécifiée'}. Veuillez contacter un bibliothécaire.`,
+              reason: librarianMessage || 'Non spécifiée',
+              type: 'blocking'
+            };
+            await notificationService.sendEmailNotification(studentEmail, studentName, templateParams);
+
+          } else if (newStatus === 'ras' && _prevEtat === 'bloc') {
+            const templateParams = {
+              to_name: studentName,
+              message: "Bonne nouvelle ! Votre compte d'accès à la bibliothèque a été débloqué. Vous pouvez à nouveau vous connecter et emprunter des documents.",
+              reason: "Déblocage",
+              type: 'unblocking'
+            };
+            await notificationService.sendEmailNotification(studentEmail, studentName, templateParams);
+          }
+        }
+      } catch (emailError) {
+        console.warn('Erreur lors de l\'envoi de l\'email de notification:', emailError);
+      }
 
       // Create an in-app notification for the user (so they see it in-app)
       try {
@@ -211,7 +242,7 @@ export class StudentsService {
           newStatus === 'bloc'
             ? `Votre compte a été bloqué. ${librarianMessage ? `Raison: ${librarianMessage}` : ''}`
             : 'Votre compte a été débloqué. Vous pouvez maintenant vous connecter.';
-        
+
         // Use the NotificationService to add a user notification (client-side notifications)
         await notificationService.sendSimpleNotification(
           studentId, // userId (in your app email is used as id)
@@ -222,9 +253,6 @@ export class StudentsService {
       } catch (notifError) {
         console.warn('Erreur lors de la création de la notification in-app:', notifError);
       }
-
-      // Note: The Cloud Function `onUserStatusChange` will send the email automatically,
-      // since it is triggered by updates to BiblioUser/{userId} and uses `blockedReason`.
     } catch (error) {
       console.error('Erreur lors de la mise à jour du statut:', error);
       throw error;
