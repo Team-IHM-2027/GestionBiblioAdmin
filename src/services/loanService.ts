@@ -306,7 +306,8 @@ export class LoanService {
     try {
       const users = await this.getActiveLoans();
       const now = new Date();
-      const threeDaysInMillis = 3 * 24 * 60 * 60 * 1000;
+      // const threeDaysInMillis = 3 * 24 * 60 * 60 * 1000;
+      const threeDaysInMillis = 10 * 60 * 1000;
 
       for (const user of users) {
         for (const slot of user.activeSlots) {
